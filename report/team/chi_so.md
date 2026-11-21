@@ -14,20 +14,34 @@ Chỉ số trong đợt chạy thử là **82,83%** (chính), **27,12%** (dùng)
 
 ## Danh sách event
 
-Ít nhất sáu event, mỗi event có `trace_id` để nối với trace của agent.
+Mười event, mỗi event có `trace_id` để nối với trace của agent. Bộ tên này khớp bộ từ vựng dùng ở `bang_loi.md` (bảng khắc phục của Kiệt) nên cả hai file dùng chung một ngôn ngữ đo lường.
 
 | Event | Ai tạo | Thuộc tính chính | Thời điểm |
 | --- | --- | --- | --- |
-| ... | ... | ..., trace_id | ... |
-| ... | ... | ..., trace_id | ... |
-| ... | ... | ..., trace_id | ... |
-| ... | ... | ..., trace_id | ... |
-| ... | ... | ..., trace_id | ... |
-| ... | ... | ..., trace_id | ... |
+| `refund_request_created` | App khách | request_id, loai, so_tien, arm, trace_id | Khi khách gửi yêu cầu |
+| `agent_run_completed` | Agent | attempt, tokens_in/out, tool_calls, status, trace_id | Sau mỗi lần chạy, kể cả lỗi |
+| `agent_suggestion_shown` | Giao diện nhân viên | staff_id, so_tien_de_xuat, trace_id | Khi gợi ý hiện ra |
+| `staff_review_decision` | Nhân viên | giu/sua/bo, phut_xem_lai (đo thật), trace_id | Khi bấm gửi/sửa/bỏ |
+| `staff_rework_completed` | Nhân viên | phut_lam_lai, ly_do, trace_id | Khi làm lại xong |
+| `refund_ledger_write` | Dịch vụ sổ cái | idempotency_key, so_tien, ket_qua, trace_id | Khi ghi sổ |
+| `handoff_to_staff` | Agent | reason, tom_tat, trace_id | Khi chuyển nhân viên |
+| `ticket_closed` | Hệ thống ticket | closed_at, trace_id | Khi đóng |
+| `ticket_reopened` | Khách | reopened_at, reason, trace_id | Khi mở lại |
+| `audit_sample_checked` | Kế toán | so_tien_da_hoan, so_tien_dung, trace_id | Hằng tuần |
 
-**Kiểm tra chéo:** với mỗi chỉ số ở bảng E1, ghi event dùng để tính. Chỉ số nào không tính được từ danh sách event thì chưa đo được.
+Các event Kiệt dùng để phát hiện lỗi (`refund_ledger_write`, `ticket_reopened`, `handoff_to_staff`, `audit_sample_checked`) đều đã có trong danh sách trên; không cần thêm event mới.
 
-- ...
+**Kiểm tra chéo — chỉ số nào tính từ event nào:**
+
+| Chỉ số (E1) | Event dùng để tính | Đo được? |
+| --- | --- | --- |
+| Chính (đóng 24h & không mở lại 7 ngày) | `refund_request_created` (created_at) + `ticket_closed` (closed_at) + `ticket_reopened` (reopened_at) | Có |
+| Dùng (tỉ lệ bỏ qua gợi ý) | `agent_suggestion_shown` + `staff_review_decision` (`giu`/`sua`/`bo`) | Có |
+| An toàn (tỉ lệ mở lại 7 ngày) | `ticket_reopened` | Có |
+| Dùng tự đề xuất (% nhóm can thiệp dùng trợ lý) | `refund_request_created` (`arm`) + `agent_run_completed` | Có |
+| An toàn tự đề xuất (% đơn hoàn sai tiền) | `audit_sample_checked` (`so_tien_da_hoan` ≠ `so_tien_dung`) | Có |
+
+Cả năm chỉ số đều tính được từ danh sách event. Lưu ý: phút xem lại và làm lại hiện là hai cột `_simulated`; từ tuần 1 của pilot phải bật đo thật `staff_review_decision.phut_xem_lai` và `staff_rework_completed.phut_lam_lai` để thay thế số giả lập trong mô hình chi phí.
 
 ## E2 · Rủi ro kinh tế
 
