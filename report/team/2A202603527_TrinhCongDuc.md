@@ -19,7 +19,7 @@
 - Điền `report/team/bang_loi.md`: hai bộ nhãn, tỉ lệ đồng thuận **20/20 = 100%**, quy tắc phân biệt cho các ca khó 6, 8, 9, 13, 18, 20, và đoạn khai nguồn nhãn (commit `4071c14`).
 - Điền `report/team/ho_so_launch_v0.md`: mục 1–3 và 7 từ `bang_chi_phi.md`, mục 4–6 từ `chi_so.md`, `bang_loi.md`, `pilot_plan.yaml`; đề xuất **Go có điều kiện** với bốn điều kiện, mỗi điều kiện có người phụ trách và ngày kiểm tra (commit `4071c14`, `899b29b`).
 - Đưa ra đề xuất cuối dựa trên các con số bất lợi: xem lại 100% chỉ còn 0,98–1,03×, power 0,64 nếu tác động thật là 5 điểm, tỉ lệ mở lại 3,97% cách trần 6% khoảng 2 điểm, mọi số tiền dựa trên phút giả lập.
-- **[ĐỨC ĐIỀN]** Việc điều phối nhóm (ví dụ: mời thành viên, chủ trì các lần gặp nhau, nhắc Kiệt sửa phần `scope` của `pilot_plan.yaml`).
+- **Điều phối nhóm:** tạo repo nhóm và cho cả ba thành viên quyền ghi (cả ba đều đã push lên repo); chốt bảng phân công 38 bước theo giờ và theo vai cho 4 người, được cả nhóm dùng làm mốc (các commit của nhóm ghi theo số bước); rà soát tiến độ các bước 1–29 trước khi chuyển sang bước duyệt chung và gửi hồ sơ; chốt cùng nhóm đề xuất cuối Go có điều kiện.
 
 ## 4. Bằng chứng
 
@@ -33,7 +33,7 @@
 
 - **Claude Code (Claude)** dùng cho: lập kế hoạch phân công theo checkpoint; chạy lại `src/lab13.py` để kiểm số của Khánh; điền hồ sơ từ số trong `bang_chi_phi.md`, `chi_so.md`, `pilot_plan.yaml`; so hai bộ nhãn bằng code; tính power; soạn câu chữ cho quy tắc phân biệt và đề xuất cuối.
 - **Bộ nhãn người 2 do AI gắn nháp, theo hướng dẫn của mentor** (mentor cho phép dùng AI gắn nhãn, nhóm chỉnh sửa sau). Vì Claude đã đọc file hướng dẫn có đáp án mẫu lúc lập kế hoạch, nên không tự gắn nhãn mà dùng một agent AI mới, chỉ được đọc đề và định nghĩa năm loại, không đọc đáp án. Kiệt cũng dùng AI cho bộ nhãn của mình (theo ghi chú của Kiệt), nên hai bộ nhãn trùng hoàn toàn và 100% này **không chứng minh hai người làm độc lập**; điều này đã được khai trong `bang_loi.md`.
-- **[ĐỨC ĐIỀN]** Xác nhận của mentor về việc dùng AI gắn nhãn (ví dụ: tin nhắn, ngày, tên mentor).
+- **Hướng dẫn của mentor về việc dùng AI gắn nhãn:** theo trao đổi của nhóm với mentor, mentor cho phép dùng AI gắn nhãn làm bản nháp và nhóm chỉnh sửa sau, vì nhóm không phải chuyên gia về gắn nhãn lỗi và đây là dự án để học cách làm việc.
 - **Báo cáo cá nhân này:** bản nháp mục 6 (Tự đánh giá) và phần câu chữ do Claude Code soạn từ những gì đã kiểm được trong buổi lab; tôi đọc lại và xác minh từng thông tin trước khi nộp.
 - **Cách tự kiểm tra kết quả của AI:** chạy lại `lab13.py` trong môi trường của mình; đối chiếu số trong hồ sơ với đầu ra của code (26/26 khớp); so hai bộ nhãn bằng code thay vì chép tay; đọc `yaml.safe_load` cho `pilot_plan.yaml`; `grep` kiểm không còn từ bị cấm ở quy tắc 5 và không còn dấu `?` ngoài chú thích.
 
