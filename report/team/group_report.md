@@ -34,11 +34,17 @@ Con số chính (ghi nhãn `simulated` khi cần) và đề xuất cuối của 
 ## 5. Khó khăn và cách xử lý
 
 - **Giới hạn cỡ mẫu cụm (40 nhân viên, ICC 0,02):** Không cách chia theo cụm nào đạt 1.251 yêu cầu hiệu dụng/nhóm cho MDE 5 điểm; nhóm giải tường minh bất phương trình cụm chọn MDE 6 điểm (`m >= 299`) và khai báo rõ rủi ro power giảm còn 0,64 trong hồ sơ.
-- **Khai báo trung thực dùng AI ở nhiệm vụ C & phối hợp Git:** Hai bộ nhãn lỗi trùng 20/20 do đều có công cụ AI hỗ trợ nên nhóm khai báo trung thực trong `bang_loi.md` thay vì coi là độc lập thuần tuý; đồng thời phân quyền 1 file 1 người chủ và chạy kiểm tra `src/lab13.py` sau mỗi lần đồng đội đẩy code để tránh xung đột.
+- **Khai báo trung thực dùng AI ở nhiệm vụ C & đối chiếu số liệu:** Hai bộ nhãn lỗi trùng 20/20 do đều có công cụ AI hỗ trợ nên nhóm khai báo trung thực trong `bang_loi.md` thay vì coi là độc lập thuần tuý; các lỗi đơn vị/lệch số nhỏ khi rà soát luật dừng (ví dụ 3.414 đ/việc thành công vs 3.585 đ/yêu cầu; chênh +2,03 điểm so với 3,97%) đều được tự kiểm lại bằng code trước khi chốt.
+- **Môi trường Python & phối hợp Git:** Máy thành viên gặp lỗi thiếu thư viện ở đầu buổi và cả nhóm dùng chung `src/lab13.py`; nhóm xử lý bằng cách phân lượt sửa 1 file 1 chủ (Khanh → Trường → Kiệt), `git pull --rebase` trước khi đẩy và chạy kiểm tra lại `src/lab13.py` sau mỗi lượt để không phát sinh xung đột.
 
 ## 6. Tổng hợp đóng góp
 
-Chi tiết đóng góp của từng thành viên nằm trong `TEAM.md` *(sẽ cập nhật tóm tắt 3 dòng của mỗi thành viên khi chốt bài lúc 17:50)*.
+Chi tiết đóng góp của từng thành viên nằm trong `TEAM.md` và các báo cáo cá nhân trong `report/team/`:
+
+- **Trịnh Công Đức (`2A202603527` — Trưởng nhóm · Gắn nhãn 2, giữ hồ sơ):** Điều phối repo/nhóm và điền `TEAM.md`; thực hiện bộ nhãn người 2, tính đồng thuận 20/20, viết quy tắc các ca khó và khai báo trung thực nguồn nhãn trong `bang_loi.md`; tổng hợp toàn bộ 7 mục + đề xuất **Go có điều kiện** kèm 4 điều kiện (đối chiếu khớp 26/26 số liệu với `lab13.py`) trong `ho_so_launch_v0.md` và trình bày bảo vệ.
+- **Nguyễn Vũ Khanh (`2A202603427` — Người viết code):** Dựng môi trường `src/.venv`, viết phần A (A1–A4) và B (B1–B4) trong `src/lab13.py` đạt 3 phép thử A1 và kiểm tra tuyến tính B1, điền đầy đủ `bang_chi_phi.md`; viết bảng rủi ro kinh tế E2 trong `chi_so.md`; kéo code kiểm chứng toàn bộ `lab13.py`, tổng hợp `group_report.md`, chạy 4 lệnh kiểm tra cuối và đẩy bản chốt.
+- **Phạm Quang Trường (`2A202603378` — Người kiểm số):** Viết script độc lập đối chiếu 15 khoản chi phí A & B với Khanh (độ lệch 0,0%); bổ sung phần tính 3 chỉ số E1 vào `src/lab13.py`, điền E1 (kèm 2 chỉ số tự đề xuất) và 10 event có `trace_id` cùng kiểm tra chéo vào `chi_so.md`; kiểm tra ngưỡng các luật dừng trong `pilot_plan.yaml` và truy nguồn toàn bộ số liệu trong hồ sơ.
+- **Nguyễn Tuấn Kiệt (`2A202603417` — Người gắn nhãn 1):** Thực hiện bộ nhãn người 1 và điền bảng khắc phục 5 ca đủ 5 loại (ca 1, 7, 18, 4, 17) trong `bang_loi.md`; bổ sung hàm tính cỡ mẫu D1 và tỉ lệ mở lại 7 ngày vào `src/lab13.py`; hoàn thiện `pilot_plan.yaml` (chia nhân viên 20 + 20, MDE 0,06, 5 câu D2, 3 luật dừng đủ 4 vế), giữ checklist "Xong khi" và chấm nhóm khác trong `phieu_cham.md`.
 
 ## 7. Hạn chế và hướng cải thiện
 
