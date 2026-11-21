@@ -1,23 +1,24 @@
 # Lab 13 · Nhiệm vụ D · Kế hoạch pilot trợ lý hoàn phí LogiX-VN (Gate 2a)
 #
-# TRẠNG THÁI: khung soạn ở bước 8 (14:10–15:20). Đã điền các trường KHÔNG phụ thuộc số liệu.
-# Các trường còn "?" chờ số do src/lab13.py tính ở bước 21, rồi điền ở bước 22 và sửa ở bước 26.
+# TRẠNG THÁI: khung soạn ở bước 8; số nháp D1 và tỉ lệ mở lại đã tính trước bằng script cá nhân.
+# Các trường còn "?" là chỗ PHẢI chờ lab13.py in ra ở bước 21 mới được điền (bước 22, sửa ở bước 26).
 # Khi nộp (sau bước 26) ngoài dòng chú thích không còn dấu "?" nào.
 #
 # Kiểm tra đọc được   : python -c "import yaml; yaml.safe_load(open('../report/team/pilot_plan.yaml'))"
 # Kiểm tra không còn ?: grep -v '^ *#' ../report/team/pilot_plan.yaml | grep -n '?'
 #
 # ── D1 · Cỡ mẫu (baseline 0,70; mục tiêu +5 điểm; alpha 0,05; power 0,8; ICC 0,02) ──
-#   a) Chia theo yêu cầu, co_mau(0.70, 0.75) ............................ ?  ← bước 21
+#   NHÁP của Kiệt (script .tmp/preview_d1.py) — bước 21 phải đối chiếu lại với số lab13.py in ra.
+#   a) Chia theo yêu cầu, co_mau(0.70, 0.75) ............... 1.251 yêu cầu mỗi nhóm
 #   b) Theo nhân viên, m = 75: DE = 1 + 74×0,02 = 2,48
-#      n = n(a) × DE; số nhân viên mỗi nhóm = ceil(n / 75) .............. ?  ← bước 21
-#      (đối chiếu với 40 nhân viên của LogiX-VN: đủ hay không đủ)
-#   c) 20 nhân viên mỗi nhóm: trần hiệu dụng = c/ICC = 20/0,02
-#      so với con số ở câu a ........................................... ?  ← bước 21
-#   d) 6 depot mỗi nhóm: trần hiệu dụng = 6/0,02 ....................... ?  ← bước 21
-#   e) Mức chênh 6 điểm = 859/nhóm, 20 người/nhóm: giải 20m / (1 + (m−1)×0,02) ≥ 859 → m
-#      ................................................................ ?  ← bước 21
-#   → Chỉ chọn cách chia ở bước 22, sau khi có đủ năm số trên. Không chọn theo cảm tính.
+#      n = 1.251 × 2,48 = 3.103/nhóm → 42 nhân viên/nhóm, tổng 84 > 40 người → KHÔNG ĐỦ NGƯỜI
+#   c) 20 nhân viên/nhóm: trần hiệu dụng = 20/0,02 = 1.000 < 1.251 → KHÔNG ĐẠT mức 5 điểm
+#   d) 6 depot/nhóm: trần hiệu dụng = 6/0,02 = 300 → loại
+#   e) Mức chênh 6 điểm = 859/nhóm, 20 người/nhóm: 20m / (1 + (m−1)×0,02) ≥ 859
+#      → m ≥ 299 yêu cầu mỗi người (DE = 6,96); 20 × 299 = 5.980 yêu cầu/nhóm, hiệu dụng 859
+#   → Hướng chốt ở bước 22: chia theo NHÂN VIÊN 20 + 20, chấp nhận mức chênh 6 điểm (mde 0,06),
+#      vì 5 điểm cần 1.251/nhóm mà 20 nhân viên chỉ đạt trần 1.000.
+#   → Con số bất lợi phải nêu trong hồ sơ: nếu tác động thật chỉ 5 điểm thì power tụt dưới 0,80.
 #
 # ── D2 · Năm câu "tách được tác động" — nháp trước, câu 5 chốt theo cách chia ở bước 22 ──
 #   1. Đối chứng cùng thời gian: 20 nhân viên đối chứng làm đúng cùng tuần, cùng depot với nhóm dùng trợ lý.
@@ -25,18 +26,26 @@
 #   3. Ảnh hưởng gián tiếp: rủi ro nhân viên đối chứng hỏi lại / chép câu trả lời của nhóm dùng trợ lý
 #      trong cùng depot; giảm bằng quyền truy cập theo tài khoản và log lượt mở trợ lý theo staff_id.
 #   4. Viết trước: chỉ số chính, ngưỡng dừng và ngày quyết định chốt trước ngày chạy bước 0,10.
-#   5. Ít nhất 20 cụm mỗi nhóm: ? ← phụ thuộc cách chia, trả lời ở bước 22.
+#   5. Ít nhất 20 cụm mỗi nhóm: CÓ — chia theo nhân viên, đúng 20 nhân viên mỗi nhóm.
 #
-# Đánh đổi đã chấp nhận: ?          ← bước 22 (ghi rõ nếu cách chia chưa đạt cả hai điều kiện)
-# Tỉ lệ mo_lai_trong_7_ngay hiện tại và ngưỡng an toàn đã chọn: ?   ← bước 21 tính tỉ lệ, bước 22 đặt ngưỡng
+# Đánh đổi đã chấp nhận: nâng mức chênh phải thấy từ 5 điểm lên 6 điểm (mde 0,05 → 0,06) để đủ
+#   20 cụm mỗi nhóm; đổi lại nếu tác động thật chỉ 5 điểm thì power < 0,80 và pilot sẽ khó kết luận.
+# Tỉ lệ mo_lai_trong_7_ngay hiện tại (nháp): 4,25% toàn mẫu (51/1.200); 3,97% trong phạm vi
+#   noi_dia + hang_nang. Ngưỡng an toàn đã chọn: chênh +2 điểm so với nhóm đối chứng, kèm trần
+#   tuyệt đối 6%. Trần phải CAO HƠN 3,97% — nếu đặt 3% thì pilot bị chính luật của mình dừng tuần đầu.
+# Tỉ lệ bỏ qua gợi ý hiện tại (nháp): 27,12% (48/177 yêu cầu được xem lại có quyết định sua hoặc bo).
 #
-# ── Luật dừng: nháp đủ bốn vế NẾU – TRONG – THÌ – KHÔNG THÌ, chờ ngưỡng số ở bước 21/22 ──
-#   an toàn : NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn đối chứng ≥ ? điểm
-#             TRONG ? tuần liên tiếp THÌ ? (ai tắt, mất bao lâu) KHÔNG THÌ ?
-#   chi phí : NẾU chi phí mỗi việc thành công > ? đ TRONG ? tuần liên tiếp THÌ ? KHÔNG THÌ ?
-#   sử dụng : NẾU tỉ lệ bỏ qua gợi ý > ? % TRONG ? tuần THÌ ? KHÔNG THÌ ?
-#   → Ngưỡng an toàn phải đặt SO VỚI NHÓM ĐỐI CHỨNG và có trần tuyệt đối CAO HƠN tỉ lệ mở lại
-#     hiện tại của dữ liệu; nếu không pilot sẽ bị chính luật của mình dừng ngay tuần đầu.
+# ── Luật dừng: nháp đủ bốn vế NẾU – TRONG – THÌ – KHÔNG THÌ ──
+#   an toàn : NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn nhóm đối chứng ≥ 2 điểm, hoặc vượt
+#             trần tuyệt đối 6% TRONG 2 tuần liên tiếp THÌ Giám đốc vận hành bật cờ tắt, trợ lý
+#             ngừng trong 30 phút KHÔNG THÌ không được chuyển sang bước rollout tiếp theo.
+#   chi phí : NẾU chi phí mỗi việc thành công > 6.700 đ (1,5× mức gốc 4.472 đ) TRONG 2 tuần
+#             liên tiếp THÌ PM trợ lý hoàn phí thu hẹp phạm vi về chỉ noi_dia và giữ giới hạn
+#             2 lần chạy KHÔNG THÌ không được mở hang_nang cho nhóm mới.
+#   sử dụng : NẾU tỉ lệ bỏ qua gợi ý > 40% (hiện tại 27,12%) TRONG 1 tuần THÌ Trưởng nhóm CSKH
+#             phỏng vấn 5 nhân viên trong 3 ngày và báo Giám đốc vận hành
+#             KHÔNG THÌ không được chuyển bước rollout.
+#   → Cả ba ngưỡng đều đặt CAO HƠN mức hiện tại của dữ liệu, nên pilot không tự dừng ngay tuần đầu.
 
 pilot:
   owner: "Giám đốc vận hành LogiX-VN"   # chức danh có quyền quyết định, không ghi tên bạn trong nhóm, không ghi "cả đội"
