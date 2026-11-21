@@ -51,8 +51,10 @@ Cách phát hiện phải đo được (event, ngưỡng, tần suất). Ngườ
 
 | Ca | Loại lỗi | Phát hiện bằng gì | Khắc phục thế nào | Ai phụ trách |
 | --: | --- | --- | --- | --- |
-| ... | Do người dùng | ... | ... | ... |
-| ... | Hệ thống | ... | ... | ... |
-| ... | Ngữ cảnh | ... | ... | ... |
-| ... | Giới hạn hệ thống | ... | ... | ... |
-| ... | Ngầm | ... | ... | ... |
+| 1 | Do người dùng | Event `refund_ledger_write` có `ket_qua = loi` và mã lỗi ngân hàng thuộc nhóm sai số tài khoản; ngưỡng cảnh báo khi > 2% số yêu cầu trong ngày (kiểm mỗi 6 giờ) | Chuẩn hoá số tài khoản trước khi tạo lệnh: bỏ khoảng trắng, đòi đủ 12–19 chữ số và kiểm chữ số kiểm tra; thiếu thì **không tạo lệnh**, hỏi lại khách kèm ảnh mẫu đúng | PM trợ lý hoàn phí |
+| 7 | Hệ thống | Đối soát mỗi giờ giữa tin nhắn "đã hoàn thành công" và event `refund_ledger_write` có `ket_qua = ok` cùng `trace_id`; ngưỡng **0 ca lệch**, lệch 1 ca là dừng gửi thông báo | Chỉ báo "đã hoàn" khi sổ cái trả `ok`; khi `503` sau 3 lần thử thì báo "đang xử lý" và chuyển `handoff_to_staff` kèm `trace_id`; thêm `idempotency_key` để chống ghi hai lần | Kỹ sư trưởng agent |
+| 18 | Ngữ cảnh | Event `ticket_reopened` với `reason = khong_hieu_so_tien`, nối `trace_id` về tin nhắn gốc; ngưỡng > 5% số yêu cầu đã đóng trong ngày (kiểm hằng ngày) | Mẫu tin nhắn bắt buộc có một dòng cách tính: "Phí giao 30.000 đ × 50% = 15.000 đ"; thêm dòng đó vào mọi mẫu thông báo hoàn tiền | Trưởng nhóm CSKH |
+| 4 | Giới hạn hệ thống | Event `handoff_to_staff` với `reason = thieu_du_lieu`, tách theo cột `loai`; ngưỡng > 10% số yêu cầu của một loại trong tuần | Giữ cách chuyển kèm `tom_tat` cho nhân viên; đàm phán dữ liệu chặng với hãng vận chuyển; giữ `quoc_te` ngoài pilot cho tới khi có dữ liệu chặng | Giám đốc vận hành LogiX-VN |
+| 17 | Ngầm | Event `audit_sample_checked` hằng tuần: kiểm mẫu 100 đơn, so `so_tien_da_hoan` với `so_tien_dung`; ngưỡng ≥ 1% số đơn lệch là mở điều tra toàn bộ đơn dùng bảng giá cũ | Xoá bộ nhớ đệm ngay khi có bảng giá mới và ghi `price_version` vào mọi `trace_id`; rà lại 212 đơn đã lệch trong 9 ngày để hoàn bù | Kế toán trưởng |
+
+**Ghi chú chọn ca:** mỗi loại một ca, ưu tiên ca có **sự kiện đo được** rõ ràng nhất. Năm ca này khác nhau về vai phụ trách (PM · Kỹ sư trưởng · Trưởng nhóm CSKH · Giám đốc vận hành · Kế toán trưởng) để không dồn hết trách nhiệm về một người. Tên event dùng đúng bộ từ vựng trong tài liệu để khớp danh sách event ở `chi_so.md` (bước 23).

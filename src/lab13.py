@@ -7,6 +7,8 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 
 import math
+from statistics import NormalDist
+
 import pandas as pd
 
 # Bảng giá GIẢ ĐỊNH của lab (không phải giá thật của nhà cung cấp nào)
@@ -41,6 +43,25 @@ def kiem_tra_dap_an_biet_truoc():
     assert abs(so_lan_chay_ky_vong(0.8) - 1.25) < 1e-9, 'p=0,8, chạy đến khi đúng → 1,25 lần chạy'
     assert abs(he_so_chi_phi_moi_viec_thanh_cong(0.8, 3) - 1.25) < 1e-9, 'p=0,8, tối đa 3 lần → 1,25 lần giá một lần chạy'
     print('Ba phép thử đáp án biết trước: ĐẠT')
+
+
+# ---------- Nhiệm vụ D · Hai hàm phụ để tính cỡ mẫu (CP4) ----------
+def co_mau_hai_ti_le(p1, p2, alpha=0.05, power=0.8):
+    """Cỡ mẫu mỗi nhóm khi so hai tỉ lệ, theo công thức trong docs/du_lieu_va_cong_thuc.md."""
+    za = NormalDist().inv_cdf(1 - alpha / 2)
+    zb = NormalDist().inv_cdf(power)
+    pb = (p1 + p2) / 2
+    tu_so = (za * math.sqrt(2 * pb * (1 - pb))
+             + zb * math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)))
+    return math.ceil(tu_so ** 2 / (p2 - p1) ** 2)
+
+
+def so_yeu_cau_moi_cum(so_cum, n_hieu_dung, icc):
+    """Số yêu cầu mỗi cụm nhỏ nhất để cỡ mẫu hiệu dụng c·m/(1+(m−1)·ICC) đạt n_hieu_dung."""
+    m = 1
+    while so_cum * m / (1 + (m - 1) * icc) < n_hieu_dung:
+        m += 1
+    return m
 
 
 # ---------- Nhiệm vụ A2 · Mô hình chi phí từ trace ----------
@@ -204,6 +225,49 @@ if __name__ == '__main__':
     print(f'- Chỉ số DÙNG (tỉ lệ bỏ qua gợi ý, sua + bo / số được xem lại): {chi_so_dung:.2%} ({so_bo_qua}/{so_duoc_xem_lai})')
     print(f'- Chỉ số AN TOÀN (tỉ lệ mở lại trong 7 ngày): {chi_so_an_toan:.2%} ({n_an_toan}/{len(reqs)})')
 
-    # TODO CP4 · Nhiệm vụ D: cỡ mẫu.
-    #   from statsmodels.stats.proportion import proportion_effectsize
-    #   from statsmodels.stats.power import NormalIndPower
+    # ---------- Nhiệm vụ D · D1 cỡ mẫu + tỉ lệ mở lại hiện tại ----------
+    print('\n=== D1 · CỠ MẪU THEO BA CÁCH CHIA ===')
+    p0, mde, alpha, power, icc = 0.70, 0.05, 0.05, 0.80, 0.02
+
+    # a) Chia theo từng yêu cầu
+    n_a = co_mau_hai_ti_le(p0, p0 + mde, alpha, power)
+    print(f'- a) Chia theo yêu cầu, co_mau({p0:.2f}, {p0 + mde:.2f}): {n_a:,} yêu cầu mỗi nhóm')
+
+    # b) Chia theo nhân viên, m = 75
+    m_b, nguoi_cong_ty = 75, 40
+    he_so_b = 1 + (m_b - 1) * icc
+    n_b = math.ceil(n_a * he_so_b)
+    nguoi_b = math.ceil(n_b / m_b)
+    du_nguoi = 'ĐỦ' if 2 * nguoi_b <= nguoi_cong_ty else 'KHÔNG ĐỦ'
+    print(f'- b) Chia theo nhân viên, m = {m_b}: hệ số thiết kế = 1 + {m_b - 1}×{icc} = {he_so_b:.2f}'
+          f' → {n_b:,} yêu cầu mỗi nhóm → {nguoi_b} nhân viên mỗi nhóm, tổng {2 * nguoi_b} người'
+          f' (công ty có {nguoi_cong_ty}) → {du_nguoi} người')
+
+    # c) 20 nhân viên mỗi nhóm
+    tran_20 = 20 / icc
+    print(f'- c) 20 nhân viên mỗi nhóm: cỡ mẫu hiệu dụng tối đa = 20/{icc} = {tran_20:,.0f}'
+          f' → {"ĐẠT" if tran_20 >= n_a else "KHÔNG ĐẠT"} mức 5 điểm (cần {n_a:,})')
+
+    # d) 6 depot mỗi nhóm
+    tran_6 = 6 / icc
+    print(f'- d) 6 depot mỗi nhóm: cỡ mẫu hiệu dụng tối đa = 6/{icc} = {tran_6:,.0f}'
+          f' → chỉ {tran_6 / n_a:.0%} mức cần → LOẠI')
+
+    # e) Chấp nhận mức chênh 6 điểm, chia theo nhân viên 20+20
+    n_6diem = co_mau_hai_ti_le(p0, p0 + 0.06, alpha, power)
+    m_e = so_yeu_cau_moi_cum(20, n_6diem, icc)
+    he_so_e = 1 + (m_e - 1) * icc
+    print(f'- e) Mức chênh 6 điểm ({n_6diem:,} mỗi nhóm), 20 nhân viên mỗi nhóm:'
+          f' m ≥ {m_e} yêu cầu mỗi người (hệ số thiết kế {he_so_e:.2f},'
+          f' hiệu dụng {20 * m_e / he_so_e:,.0f})')
+
+    # Tỉ lệ mở lại hiện tại: phải biết trước khi đặt ngưỡng an toàn cho pilot
+    print('\n=== TỈ LỆ MỞ LẠI TRONG 7 NGÀY HIỆN TẠI (ĐỂ ĐẶT NGƯỠNG AN TOÀN) ===')
+    mo_lai = reqs['mo_lai_trong_7_ngay'].astype(int)
+    trong_pv = reqs['loai'].isin(['noi_dia', 'hang_nang'])
+    ti_le_toan_mau, ti_le_pv = mo_lai.mean(), mo_lai[trong_pv].mean()
+    print(f'- Toàn bộ {len(mo_lai):,} yêu cầu: {ti_le_toan_mau:.2%} ({int(mo_lai.sum())}/{len(mo_lai)})')
+    print(f'- Trong phạm vi noi_dia + hang_nang: {ti_le_pv:.2%}'
+          f' ({int(mo_lai[trong_pv].sum())}/{int(trong_pv.sum())})')
+    print(f'- Ngưỡng tuyệt đối 3% sẽ dừng pilot ngay tuần đầu: {"CÓ" if ti_le_pv > 0.03 else "KHÔNG"}'
+          f' → trần an toàn phải cao hơn {ti_le_pv:.2%}')

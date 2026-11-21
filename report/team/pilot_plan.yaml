@@ -1,14 +1,14 @@
 # Lab 13 · Nhiệm vụ D · Kế hoạch pilot trợ lý hoàn phí LogiX-VN (Gate 2a)
 #
-# TRẠNG THÁI: khung soạn ở bước 8; số nháp D1 và tỉ lệ mở lại đã tính trước bằng script cá nhân.
-# Các trường còn "?" là chỗ PHẢI chờ lab13.py in ra ở bước 21 mới được điền (bước 22, sửa ở bước 26).
-# Khi nộp (sau bước 26) ngoài dòng chú thích không còn dấu "?" nào.
+# TRẠNG THÁI: hoàn chỉnh ở bước 22 — mọi dấu "?" ngoài dòng chú thích đã điền.
+# Số D1 và tỉ lệ mở lại dưới đây do src/lab13.py in ra ở bước 21 (khớp script nháp .tmp/preview_d1.py).
+# Chờ bước 25 (Trường kiểm ngưỡng luật dừng) rồi bước 26 sửa lần cuối.
 #
 # Kiểm tra đọc được   : python -c "import yaml; yaml.safe_load(open('../report/team/pilot_plan.yaml'))"
 # Kiểm tra không còn ?: grep -v '^ *#' ../report/team/pilot_plan.yaml | grep -n '?'
 #
 # ── D1 · Cỡ mẫu (baseline 0,70; mục tiêu +5 điểm; alpha 0,05; power 0,8; ICC 0,02) ──
-#   NHÁP của Kiệt (script .tmp/preview_d1.py) — bước 21 phải đối chiếu lại với số lab13.py in ra.
+#   ĐÃ XÁC NHẬN ở bước 21: số dưới đây do lab13.py in ra (khớp script nháp .tmp/preview_d1.py).
 #   a) Chia theo yêu cầu, co_mau(0.70, 0.75) ............... 1.251 yêu cầu mỗi nhóm
 #   b) Theo nhân viên, m = 75: DE = 1 + 74×0,02 = 2,48
 #      n = 1.251 × 2,48 = 3.103/nhóm → 42 nhân viên/nhóm, tổng 84 > 40 người → KHÔNG ĐỦ NGƯỜI
@@ -51,27 +51,27 @@ pilot:
   owner: "Giám đốc vận hành LogiX-VN"   # chức danh có quyền quyết định, không ghi tên bạn trong nhóm, không ghi "cả đội"
   scope: "Chỉ noi_dia và hang_nang (2.696 đ = 0,22× và 8.221 đ = 0,69× so với 12.000 đ, simulated); loại quoc_te (22.515 đ = 1,88×, thành công 27,3%) và doi_tac (10.215 đ = 0,85×); chạy ở 6 depot của đợt chạy thử"   # chốt từ A3 (commit d2ac4de) ở bước 13
   assignment:
-    unit: "?"                           # request | staff | depot — bước 22
+    unit: "staff"                       # chia theo nhân viên: 20 dùng trợ lý + 20 đối chứng
     control_share: 0.5
     randomized: true                    # bốc thăm bằng code, seed ghi trước, phân tầng theo depot
   rollout: [0.10, 0.25, 0.50]           # 40 nhân viên → 4 → 10 → 20 người; mỗi bước một tuần
   primary_metric:
     name: dong_trong_24h_khong_mo_lai_7_ngay
     baseline: 0.70
-    mde: 0.05                           # nếu phải nâng lên 6 điểm thì sửa ở bước 22 và ghi vào đánh đổi
+    mde: 0.06                           # đánh đổi đã chấp nhận: 5 điểm không đủ mẫu với 20 nhân viên/nhóm
     alpha: 0.05
     power: 0.80
-    n_per_arm: "?"                      # bước 21
-    design_effect: "?"                  # 1 nếu chia theo yêu cầu; 1 + (m−1)×0,02 nếu chia theo cụm
-    clusters_per_arm: "?"               # để trống nếu chia theo yêu cầu
+    n_per_arm: 859                      # lab13.py D1 câu e (mức chênh 6 điểm)
+    design_effect: 6.96                 # 1 + (299 − 1) × 0,02
+    clusters_per_arm: 20                # 20 nhân viên mỗi nhóm, mỗi người ≥ 299 yêu cầu
   identifiability:
-    concurrent_control: "?"             # D2 câu 1
-    spillover_risk: "?"                 # D2 câu 3
-    predeclared: "?"                    # D2 câu 4
+    concurrent_control: "Có: 20 nhân viên đối chứng làm việc cùng tuần, cùng depot với nhóm dùng trợ lý"             # D2 câu 1
+    spillover_risk: "Có rủi ro nhân viên đối chứng hỏi lại hoặc chép câu trả lời của nhóm dùng trợ lý trong cùng depot; giảm bằng quyền truy cập theo tài khoản và log lượt mở trợ lý theo staff_id"  # D2 câu 3
+    predeclared: "Có: chỉ số chính, ngưỡng dừng và ngày quyết định 2027-01-05 chốt trước ngày chạy bước 0,10"        # D2 câu 4
   stop_rules:
-    - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
-    - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
-    - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
+    - "NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn nhóm đối chứng ≥ 2 điểm, hoặc vượt trần tuyệt đối 6% TRONG 2 tuần liên tiếp THÌ Giám đốc vận hành bật cờ tắt, trợ lý ngừng trong 30 phút KHÔNG THÌ không được chuyển sang bước rollout tiếp theo"
+    - "NẾU chi phí mỗi việc thành công > 6.700 đ (1,5× mức gốc 4.472 đ) TRONG 2 tuần liên tiếp THÌ PM trợ lý hoàn phí thu hẹp phạm vi về chỉ noi_dia và giữ giới hạn 2 lần chạy KHÔNG THÌ không được mở hang_nang cho nhóm mới"
+    - "NẾU tỉ lệ bỏ qua gợi ý > 40% (hiện tại 27,12%) TRONG 1 tuần THÌ Trưởng nhóm CSKH phỏng vấn 5 nhân viên trong 3 ngày và báo Giám đốc vận hành KHÔNG THÌ không được chuyển bước rollout"
   interim_looks: "chỉ kiểm tra chỉ số an toàn"
   rollback: "Giám đốc vận hành bấm cờ tắt khẩn cấp trên bảng điều khiển trợ lý; hiệu lực trong 30 phút; trong 30 phút đó khách được phục vụ bằng luồng nhân viên tự làm (6 phút/yêu cầu), không chờ trợ lý bật lại"
   decision_date: "2027-01-05"           # bắt đầu 07/12/2026 (T2), 3 tuần rollout tới 28/12/2026, đo thêm 1 tuần
