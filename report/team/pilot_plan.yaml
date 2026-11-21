@@ -1,8 +1,8 @@
 # Lab 13 · Nhiệm vụ D · Kế hoạch pilot trợ lý hoàn phí LogiX-VN (Gate 2a)
 #
-# TRẠNG THÁI: hoàn chỉnh ở bước 22 — mọi dấu "?" ngoài dòng chú thích đã điền.
-# Số D1 và tỉ lệ mở lại dưới đây do src/lab13.py in ra ở bước 21 (khớp script nháp .tmp/preview_d1.py).
-# Chờ bước 25 (Trường kiểm ngưỡng luật dừng) rồi bước 26 sửa lần cuối.
+# TRẠNG THÁI: chốt ở bước 26 — đã sửa ba luật dừng theo góp ý kiểm ngưỡng của Trường (bước 25).
+# Không còn dấu "?" nào ngoài dòng chú thích. Số D1 và tỉ lệ mở lại do src/lab13.py in ra ở bước 21.
+# Chờ bước 29 (Trường kiểm số hồ sơ) và bước 37 (4 lệnh kiểm tra cuối) — không sửa thêm nếu không có lỗi.
 #
 # Kiểm tra đọc được   : python -c "import yaml; yaml.safe_load(open('../report/team/pilot_plan.yaml'))"
 # Kiểm tra không còn ?: grep -v '^ *#' ../report/team/pilot_plan.yaml | grep -n '?'
@@ -30,21 +30,16 @@
 #
 # Đánh đổi đã chấp nhận: nâng mức chênh phải thấy từ 5 điểm lên 6 điểm (mde 0,05 → 0,06) để đủ
 #   20 cụm mỗi nhóm; đổi lại nếu tác động thật chỉ 5 điểm thì power < 0,80 và pilot sẽ khó kết luận.
-# Tỉ lệ mo_lai_trong_7_ngay hiện tại (nháp): 4,25% toàn mẫu (51/1.200); 3,97% trong phạm vi
-#   noi_dia + hang_nang. Ngưỡng an toàn đã chọn: chênh +2 điểm so với nhóm đối chứng, kèm trần
-#   tuyệt đối 6%. Trần phải CAO HƠN 3,97% — nếu đặt 3% thì pilot bị chính luật của mình dừng tuần đầu.
-# Tỉ lệ bỏ qua gợi ý hiện tại (nháp): 27,12% (48/177 yêu cầu được xem lại có quyết định sua hoặc bo).
+# Tỉ lệ mo_lai_trong_7_ngay hiện tại: 4,25% toàn mẫu (51/1.200); 3,97% trong phạm vi
+#   noi_dia + hang_nang (chi_so.md, chỉ số An toàn). Ngưỡng an toàn đã chọn: chênh +2 điểm so với
+#   nhóm đối chứng TRONG CÙNG ĐỢT, kèm trần tuyệt đối 6% (cao hơn mức thực 3,97% đúng +2,03 điểm).
+#   Nếu đặt trần 3% thì pilot bị chính luật của mình dừng ngay tuần đầu.
+# Tỉ lệ bỏ qua gợi ý hiện tại: 27,12% (48/177 yêu cầu được xem lại có quyết định sua hoặc bo).
 #
-# ── Luật dừng: nháp đủ bốn vế NẾU – TRONG – THÌ – KHÔNG THÌ ──
-#   an toàn : NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn nhóm đối chứng ≥ 2 điểm, hoặc vượt
-#             trần tuyệt đối 6% TRONG 2 tuần liên tiếp THÌ Giám đốc vận hành bật cờ tắt, trợ lý
-#             ngừng trong 30 phút KHÔNG THÌ không được chuyển sang bước rollout tiếp theo.
-#   chi phí : NẾU chi phí mỗi việc thành công > 6.700 đ (1,5× mức gốc 4.472 đ) TRONG 2 tuần
-#             liên tiếp THÌ PM trợ lý hoàn phí thu hẹp phạm vi về chỉ noi_dia và giữ giới hạn
-#             2 lần chạy KHÔNG THÌ không được mở hang_nang cho nhóm mới.
-#   sử dụng : NẾU tỉ lệ bỏ qua gợi ý > 40% (hiện tại 27,12%) TRONG 1 tuần THÌ Trưởng nhóm CSKH
-#             phỏng vấn 5 nhân viên trong 3 ngày và báo Giám đốc vận hành
-#             KHÔNG THÌ không được chuyển bước rollout.
+# ── Luật dừng: đã chốt ở bước 26 theo góp ý kiểm ngưỡng của Trường (bước 25) ──
+#   Nội dung ba luật nằm ở mục stop_rules bên dưới; phần chú thích ngay trên mỗi luật ghi con số
+#   nền của từng ngưỡng để hội đồng đối chiếu được tại chỗ: 4,25% / 3,97% (an toàn),
+#   3.414 đ (chi phí phạm vi), 27,12% (mức độ sử dụng).
 #   → Cả ba ngưỡng đều đặt CAO HƠN mức hiện tại của dữ liệu, nên pilot không tự dừng ngay tuần đầu.
 
 pilot:
@@ -69,9 +64,21 @@ pilot:
     spillover_risk: "Có rủi ro nhân viên đối chứng hỏi lại hoặc chép câu trả lời của nhóm dùng trợ lý trong cùng depot; giảm bằng quyền truy cập theo tài khoản và log lượt mở trợ lý theo staff_id"  # D2 câu 3
     predeclared: "Có: chỉ số chính, ngưỡng dừng và ngày quyết định 2027-01-05 chốt trước ngày chạy bước 0,10"        # D2 câu 4
   stop_rules:
-    - "NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn nhóm đối chứng ≥ 2 điểm, hoặc vượt trần tuyệt đối 6% TRONG 2 tuần liên tiếp THÌ Giám đốc vận hành bật cờ tắt, trợ lý ngừng trong 30 phút KHÔNG THÌ không được chuyển sang bước rollout tiếp theo"
-    - "NẾU chi phí mỗi việc thành công > 6.700 đ (1,5× mức gốc 4.472 đ) TRONG 2 tuần liên tiếp THÌ PM trợ lý hoàn phí thu hẹp phạm vi về chỉ noi_dia và giữ giới hạn 2 lần chạy KHÔNG THÌ không được mở hang_nang cho nhóm mới"
-    - "NẾU tỉ lệ bỏ qua gợi ý > 40% (hiện tại 27,12%) TRONG 1 tuần THÌ Trưởng nhóm CSKH phỏng vấn 5 nhân viên trong 3 ngày và báo Giám đốc vận hành KHÔNG THÌ không được chuyển bước rollout"
+    # Ba ngưỡng dưới đây đã theo góp ý kiểm ngưỡng của Trường ở bước 25.
+    # · An toàn: tỉ lệ mở lại 7 ngày hiện tại là 4,25% toàn mẫu, 3,97% trong phạm vi
+    #   noi_dia + hang_nang (chi_so.md, chỉ số An toàn). Trần tuyệt đối 6% cao hơn mức thực
+    #   3,97% đúng +2,03 điểm (1,51 lần), tức ngưỡng nằm TRÊN mức thực → không dừng oan tuần đầu.
+    #   So sánh luôn đặt "trong cùng đợt" để không so với số của đợt chạy thử cũ.
+    # · Chi phí: chi phí mỗi việc thành công của CHÍNH phạm vi pilot (noi_dia + hang_nang) là
+    #   3.414 đ (tổng chi phí phạm vi ÷ 900 việc thành công phạm vi), thấp hơn ngưỡng 6.700 đ
+    #   gần 2 lần. Ngưỡng đặt ở 1,5× mức gốc toàn mẫu 4.472 đ để chỉ dừng khi chi phí phình thật,
+    #   không dừng nhầm vì phần chi phí nhỏ của phạm vi hẹp.
+    #   (Nếu bình quân theo số yêu cầu thì ra 3.585 đ — cách tính này cũng dưới ngưỡng.)
+    # · Sử dụng: "bỏ qua gợi ý" = quyết định sua hoặc bo chia số yêu cầu được xem lại
+    #   (chi_so.md, chỉ số Dùng). Hiện tại 27,12%, ngưỡng 40% cao hơn 12,88 điểm.
+    - "NẾU tỉ lệ mở lại trong 7 ngày của nhóm trợ lý cao hơn nhóm đối chứng trong cùng đợt từ 2 điểm trở lên, hoặc vượt trần tuyệt đối 6% TRONG 2 tuần liên tiếp THÌ Giám đốc vận hành bật cờ tắt, trợ lý ngừng trong 30 phút KHÔNG THÌ không được chuyển sang bước rollout tiếp theo"
+    - "NẾU chi phí mỗi việc thành công > 6.700 đ (1,5× mức gốc toàn mẫu 4.472 đ; phạm vi pilot hiện là 3.414 đ) TRONG 2 tuần liên tiếp THÌ PM trợ lý hoàn phí thu hẹp phạm vi về chỉ noi_dia và giữ giới hạn 2 lần chạy KHÔNG THÌ không được mở hang_nang cho nhóm mới"
+    - "NẾU tỉ lệ bỏ qua gợi ý (quyết định sua hoặc bo trên số yêu cầu được xem lại, tức chỉ số Dùng ở chi_so.md) > 40% (hiện tại 27,12%) TRONG 1 tuần đầu tiên của pilot THÌ Trưởng nhóm CSKH phỏng vấn 5 nhân viên trong 3 ngày và báo Giám đốc vận hành KHÔNG THÌ không được chuyển bước rollout"
   interim_looks: "chỉ kiểm tra chỉ số an toàn"
   rollback: "Giám đốc vận hành bấm cờ tắt khẩn cấp trên bảng điều khiển trợ lý; hiệu lực trong 30 phút; trong 30 phút đó khách được phục vụ bằng luồng nhân viên tự làm (6 phút/yêu cầu), không chờ trợ lý bật lại"
   decision_date: "2027-01-05"           # bắt đầu 07/12/2026 (T2), 3 tuần rollout tới 28/12/2026, đo thêm 1 tuần
