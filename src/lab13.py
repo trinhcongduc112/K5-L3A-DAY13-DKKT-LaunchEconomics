@@ -3,6 +3,9 @@ Chạy trong thư mục src/: python3 lab13.py   (cần pandas; Nhiệm vụ D c
 Không cần khoá API. Điền các chỗ ghi VIẾT Ở ĐÂY (đánh dấu TODO CP1…CP4). Dữ liệu trong hai file CSV là giả lập.
 Bản gốc chưa sửa nằm ở lab13_starter.py.
 """
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
 import math
 import pandas as pd
 
@@ -187,6 +190,20 @@ if __name__ == '__main__':
     print(f'- Số yêu cầu phạm vi: {len(pham_vi_reqs)}, số YC có run ok: {yc_co_ok}, số ca làm lại: {so_ca_lam_lai_pv}, số việc thành công: {tc_mau}')
     print(f'- Với 9 phút/ca làm lại (đề bài): Tổng = {tong_b4_9p:,.0f} đ -> CPS = {cps_b4_9p:,.0f} đ = {cps_b4_9p / BASELINE:.2f}x của 12.000 đ [simulated] (hoà vốn xem lại <= {hoa_von_9p:.1f} phút).')
     print(f'- Với {phut_lam_lai_tb:.1f} phút/ca làm lại (trung bình cột simulated): Tổng = {tong_b4_15p:,.0f} đ -> CPS = {cps_b4_15p:,.0f} đ = {cps_b4_15p / BASELINE:.2f}x của 12.000 đ [simulated] (hoà vốn xem lại <= {hoa_von_15p:.1f} phút).')
+
+    # ---------- Nhiệm vụ E1 · Ba chỉ số đo lường (trên 1.200 yêu cầu) ----------
+    print('\n=== E1 · BA CHỈ SỐ ĐO LƯỜNG (TRÊN 1.200 YÊU CẦU) ===')
+    n_chinh = int(((reqs['dong_trong_24h'] == 1) & (reqs['mo_lai_trong_7_ngay'] == 0)).sum())
+    chi_so_chinh = n_chinh / len(reqs)
+    so_duoc_xem_lai = int((reqs['duoc_xem_lai'] == 1).sum())
+    so_bo_qua = int(reqs.loc[reqs['duoc_xem_lai'] == 1, 'quyet_dinh_xem_lai'].isin(['sua', 'bo']).sum())
+    chi_so_dung = so_bo_qua / so_duoc_xem_lai
+    n_an_toan = int((reqs['mo_lai_trong_7_ngay'] == 1).sum())
+    chi_so_an_toan = n_an_toan / len(reqs)
+    print(f'- Chỉ số CHÍNH (đóng trong 24h và không mở lại 7 ngày): {chi_so_chinh:.2%} ({n_chinh}/{len(reqs)})')
+    print(f'- Chỉ số DÙNG (tỉ lệ bỏ qua gợi ý, sua + bo / số được xem lại): {chi_so_dung:.2%} ({so_bo_qua}/{so_duoc_xem_lai})')
+    print(f'- Chỉ số AN TOÀN (tỉ lệ mở lại trong 7 ngày): {chi_so_an_toan:.2%} ({n_an_toan}/{len(reqs)})')
+
     # TODO CP4 · Nhiệm vụ D: cỡ mẫu.
     #   from statsmodels.stats.proportion import proportion_effectsize
     #   from statsmodels.stats.power import NormalIndPower
