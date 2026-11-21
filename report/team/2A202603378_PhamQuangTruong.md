@@ -13,11 +13,13 @@ Ví dụ: `20241234_NguyenVanAn.md`.
 
 ## 2. Phần việc phụ trách
 
-...
+Phụ trách phần Kiểm số (Giai đoạn 1): tự tính lại số của Khánh để kiểm, tính các chỉ số đo lường/event, kiểm số trong hồ sơ, kiểm ngưỡng luật dừng, nội dung gửi Khánh và cả nhóm.
 
 ## 3. Đóng góp cụ thể
 
-...
+- Bước 7: tự tính độc lập 15 khoản (token, tool, lần chạy 2–3, xem lại, làm lại, tổng chi phí, việc thành công, CPS mỗi việc thành công, hoá đơn chia yêu cầu, CPS theo 4 loại) → so số với số của Khánh, lệch 0,0% (bảng ở mục 4).
+- Bước 15+19: thêm E1 vào `lab13.py` (chính 82,83% / dùng 27,12% / an toàn 4,25%) và `chi_so.md` (3 chỉ số + 2 chỉ số tự đề xuất).
+- Bước 23: 10 event có `trace_id`, kiểm chéo 5 chỉ số-event; Bước 25: kiểm ngưỡng luật dừng (an toàn 6% > 4,25%, chi phí ~3,5 đ < 6,700 đ, bỏ qua gợi ý 27,12% < 40%); Bước 29: truy nguồn mọi số trong `ho_so_launch_v0.md`.
 
 ## 4. Bằng chứng
 
@@ -47,10 +49,9 @@ Kết luận: mọi số khớp, độ lệch lớn nhất là **0,0%** (dưới
 
 ## 5. Công cụ AI đã dùng
 
-Công cụ nào, dùng vào việc gì, bạn tự kiểm tra kết quả ra sao.
-
-...
+Công cụ AI đã dùng: AI agent đang hỗ trợ bạn để đọc/phân tích bài thực hành; giúp dựng script tự tính `src/kiem_so_truong.py` (lấy số từ hai CSV); giúp dựng gợi ý cho Kiệt.
+Cách tự kiểm: chạy script và so sánh với công thức tài liệu đối chiếu, cộng với chạy lại `lab13.py`; khớp 100% ở bước 11.
 
 ## 6. Tự đánh giá
 
-...
+Thực hiện đầy đủ 7 bước của phần Kiểm số (7, 11, 15, 19, 23, 25, 29). So số mình với Khánh/Đức đều khớp: lệch 0,0% ở bước 11, không cần báo sửa. Đề xuất cải thiện luật an toàn của Kiệt giải thích độ chênh thực (an toàn 3,97% cách trần ~2 điểm); cần đo thực tế dữ liệu pilot khi vào rollout.
