@@ -3,6 +3,8 @@
 !.env.example
 __pycache__/
 *.py[cod]
+# Thư mục nháp cá nhân (bản trích đề, script tạm) — không đưa vào repo nhóm
+.tmp/
 .pytest_cache/
 .DS_Store
 .venv/

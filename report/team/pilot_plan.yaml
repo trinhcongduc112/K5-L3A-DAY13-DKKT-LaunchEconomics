@@ -1,51 +1,73 @@
 # Lab 13 · Nhiệm vụ D · Kế hoạch pilot trợ lý hoàn phí LogiX-VN (Gate 2a)
-# Điền mọi chỗ có dấu hỏi. Khi nộp, ngoài các dòng chú thích không còn dấu hỏi nào.
-# Kiểm tra đọc được: python -c "import yaml; yaml.safe_load(open('../report/team/pilot_plan.yaml'))"
 #
-# D1 · Cỡ mẫu (baseline 0,70; mục tiêu +5 điểm; alpha 0,05; power 0,8; ICC 0,02)
-#   a) Chia theo yêu cầu:
-#   b) Theo nhân viên, m = 75:
-#   c) 20 nhân viên mỗi nhóm:
-#   d) 6 depot mỗi nhóm:
-#   e) Mức chênh 6 điểm (859 mỗi nhóm), 20 nhân viên mỗi nhóm:
+# TRẠNG THÁI: khung soạn ở bước 8 (14:10–15:20). Đã điền các trường KHÔNG phụ thuộc số liệu.
+# Các trường còn "?" chờ số do src/lab13.py tính ở bước 21, rồi điền ở bước 22 và sửa ở bước 26.
+# Khi nộp (sau bước 26) ngoài dòng chú thích không còn dấu "?" nào.
 #
-# D2 · Năm câu kiểm tra "tách được tác động" với cách chia đã chọn (mỗi câu một dòng):
-#   1. Đối chứng chạy cùng thời gian:
-#   2. Chia ngẫu nhiên hay do người chọn:
-#   3. Ảnh hưởng gián tiếp và cách giảm:
-#   4. Chỉ số chính, ngưỡng, ngày quyết định đã viết trước:
-#   5. Ít nhất 20 cụm mỗi nhóm:
+# Kiểm tra đọc được   : python -c "import yaml; yaml.safe_load(open('../report/team/pilot_plan.yaml'))"
+# Kiểm tra không còn ?: grep -v '^ *#' ../report/team/pilot_plan.yaml | grep -n '?'
 #
-# Đánh đổi đã chấp nhận (nếu cách chia chưa đạt cả hai điều kiện):
+# ── D1 · Cỡ mẫu (baseline 0,70; mục tiêu +5 điểm; alpha 0,05; power 0,8; ICC 0,02) ──
+#   a) Chia theo yêu cầu, co_mau(0.70, 0.75) ............................ ?  ← bước 21
+#   b) Theo nhân viên, m = 75: DE = 1 + 74×0,02 = 2,48
+#      n = n(a) × DE; số nhân viên mỗi nhóm = ceil(n / 75) .............. ?  ← bước 21
+#      (đối chiếu với 40 nhân viên của LogiX-VN: đủ hay không đủ)
+#   c) 20 nhân viên mỗi nhóm: trần hiệu dụng = c/ICC = 20/0,02
+#      so với con số ở câu a ........................................... ?  ← bước 21
+#   d) 6 depot mỗi nhóm: trần hiệu dụng = 6/0,02 ....................... ?  ← bước 21
+#   e) Mức chênh 6 điểm = 859/nhóm, 20 người/nhóm: giải 20m / (1 + (m−1)×0,02) ≥ 859 → m
+#      ................................................................ ?  ← bước 21
+#   → Chỉ chọn cách chia ở bước 22, sau khi có đủ năm số trên. Không chọn theo cảm tính.
 #
-# Tỉ lệ mo_lai_trong_7_ngay hiện tại và ngưỡng an toàn đã chọn:
+# ── D2 · Năm câu "tách được tác động" — nháp trước, câu 5 chốt theo cách chia ở bước 22 ──
+#   1. Đối chứng cùng thời gian: 20 nhân viên đối chứng làm đúng cùng tuần, cùng depot với nhóm dùng trợ lý.
+#   2. Ngẫu nhiên: bốc thăm bằng code, seed ghi vào biên bản TRƯỚC khi chạy, phân tầng theo depot.
+#   3. Ảnh hưởng gián tiếp: rủi ro nhân viên đối chứng hỏi lại / chép câu trả lời của nhóm dùng trợ lý
+#      trong cùng depot; giảm bằng quyền truy cập theo tài khoản và log lượt mở trợ lý theo staff_id.
+#   4. Viết trước: chỉ số chính, ngưỡng dừng và ngày quyết định chốt trước ngày chạy bước 0,10.
+#   5. Ít nhất 20 cụm mỗi nhóm: ? ← phụ thuộc cách chia, trả lời ở bước 22.
+#
+# Đánh đổi đã chấp nhận: ?          ← bước 22 (ghi rõ nếu cách chia chưa đạt cả hai điều kiện)
+# Tỉ lệ mo_lai_trong_7_ngay hiện tại và ngưỡng an toàn đã chọn: ?   ← bước 21 tính tỉ lệ, bước 22 đặt ngưỡng
+#
+# ── Luật dừng: nháp đủ bốn vế NẾU – TRONG – THÌ – KHÔNG THÌ, chờ ngưỡng số ở bước 21/22 ──
+#   an toàn : NẾU tỉ lệ mở lại 7 ngày của nhóm trợ lý cao hơn đối chứng ≥ ? điểm
+#             TRONG ? tuần liên tiếp THÌ ? (ai tắt, mất bao lâu) KHÔNG THÌ ?
+#   chi phí : NẾU chi phí mỗi việc thành công > ? đ TRONG ? tuần liên tiếp THÌ ? KHÔNG THÌ ?
+#   sử dụng : NẾU tỉ lệ bỏ qua gợi ý > ? % TRONG ? tuần THÌ ? KHÔNG THÌ ?
+#   → Ngưỡng an toàn phải đặt SO VỚI NHÓM ĐỐI CHỨNG và có trần tuyệt đối CAO HƠN tỉ lệ mở lại
+#     hiện tại của dữ liệu; nếu không pilot sẽ bị chính luật của mình dừng ngay tuần đầu.
 
 pilot:
-  owner: "?"                      # một người có tên vai trò, không ghi "cả đội"
-  scope: "?"                      # loại yêu cầu nào, depot nào; dựa vào kết quả A3
+  owner: "Giám đốc vận hành LogiX-VN"   # chức danh có quyền quyết định, không ghi tên bạn trong nhóm, không ghi "cả đội"
+  scope: "Chỉ noi_dia và hang_nang (2.696 đ = 0,22× và 8.221 đ = 0,69× so với 12.000 đ, simulated); loại quoc_te (22.515 đ = 1,88×, thành công 27,3%) và doi_tac (10.215 đ = 0,85×); chạy ở 6 depot của đợt chạy thử"   # chốt từ A3 (commit d2ac4de) ở bước 13
   assignment:
-    unit: "?"                     # request | staff | depot
+    unit: "?"                           # request | staff | depot — bước 22
     control_share: 0.5
-    randomized: true
-  rollout: [0.10, 0.25, 0.50]     # mỗi bước một tuần
+    randomized: true                    # bốc thăm bằng code, seed ghi trước, phân tầng theo depot
+  rollout: [0.10, 0.25, 0.50]           # 40 nhân viên → 4 → 10 → 20 người; mỗi bước một tuần
   primary_metric:
     name: dong_trong_24h_khong_mo_lai_7_ngay
     baseline: 0.70
-    mde: 0.05
+    mde: 0.05                           # nếu phải nâng lên 6 điểm thì sửa ở bước 22 và ghi vào đánh đổi
     alpha: 0.05
     power: 0.80
-    n_per_arm: "?"
-    design_effect: "?"            # 1 nếu chia theo yêu cầu
-    clusters_per_arm: "?"         # để trống nếu chia theo yêu cầu
+    n_per_arm: "?"                      # bước 21
+    design_effect: "?"                  # 1 nếu chia theo yêu cầu; 1 + (m−1)×0,02 nếu chia theo cụm
+    clusters_per_arm: "?"               # để trống nếu chia theo yêu cầu
   identifiability:
-    concurrent_control: "?"
-    spillover_risk: "?"
-    predeclared: "?"
+    concurrent_control: "?"             # D2 câu 1
+    spillover_risk: "?"                 # D2 câu 3
+    predeclared: "?"                    # D2 câu 4
   stop_rules:
     - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
     - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
     - "NẾU ? TRONG ? THÌ ? KHÔNG THÌ ?"
   interim_looks: "chỉ kiểm tra chỉ số an toàn"
-  rollback: "?"                   # ai bấm, mất bao lâu, khách được phục vụ bằng gì
-  decision_date: "?"
-  simulated_inputs: ["?"]         # liệt kê mọi con số giả lập đã dùng
+  rollback: "Giám đốc vận hành bấm cờ tắt khẩn cấp trên bảng điều khiển trợ lý; hiệu lực trong 30 phút; trong 30 phút đó khách được phục vụ bằng luồng nhân viên tự làm (6 phút/yêu cầu), không chờ trợ lý bật lại"
+  decision_date: "2027-01-05"           # bắt đầu 07/12/2026 (T2), 3 tuần rollout tới 28/12/2026, đo thêm 1 tuần
+  simulated_inputs:
+    - "phut_xem_lai_simulated và phut_lam_lai_simulated: số phút giả lập trong logix_requests.csv, quy ra tiền theo 2.000 đ/phút"
+    - "Giá giả định của lab: token vào 26 đ / ra 130 đ mỗi 1.000 token, tool 15 đ mỗi lần, lương nhân viên 2.000 đ/phút, nhân viên tự làm 12.000 đ/yêu cầu, chi phí cố định 40 triệu đ/tháng"
+    - "Chỉ số chính hiện tại 0,70 và mục tiêu +5 điểm: cho sẵn trong đề, không đo từ dữ liệu"
+    - "Tỉ lệ mo_lai_trong_7_ngay hiện tại: tính từ 1.200 yêu cầu giả lập ở bước 21"
