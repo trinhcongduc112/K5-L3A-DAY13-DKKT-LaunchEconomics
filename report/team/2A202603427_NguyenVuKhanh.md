@@ -38,7 +38,7 @@ Commit, file, bảng hoặc con số do bạn làm.
 Công cụ nào, dùng vào việc gì, bạn tự kiểm tra kết quả ra sao.
 
 - Dùng trợ lý AI (Antigravity) để gợi ý cấu trúc code Python trong `src/lab13.py`, rà soát công thức và định dạng bảng Markdown trong `bang_chi_phi.md`, `chi_so.md`, `group_report.md`.
-- Tự kiểm tra kết quả bằng cách chạy trực tiếp `python lab13.py` qua 3 phép thử A1 (`1,20 · 1,25 · 1,25`), kiểm tra tính chất tuyến tính B1/B2 (mỗi kịch bản giảm một nửa bằng đúng nửa mức tăng gấp đôi: `+5,6% / -2,8%`, `+40,7% / -20,3%`, `+51,8% / -25,9%`, đổi cặp `+46,3%`), đối chiếu số với đồng đội kiểm số (Trường), và chạy `yaml.safe_load` cùng kiểm tra từ cấm `"production"` trong `report/team/`.
+- Tự kiểm tra kết quả bằng cách chạy trực tiếp `python lab13.py` qua 3 phép thử A1 (`1,20 · 1,25 · 1,25`), kiểm tra tính chất tuyến tính B1/B2 (mỗi kịch bản giảm một nửa bằng đúng nửa mức tăng gấp đôi: `+5,6% / -2,8%`, `+40,7% / -20,3%`, `+51,8% / -25,9%`, đổi cặp `+46,3%`), đối chiếu số với đồng đội kiểm số (Trường), và chạy `yaml.safe_load` cùng kiểm tra không có từ cấm trong `report/team/`.
 
 ## 6. Tự đánh giá
 
